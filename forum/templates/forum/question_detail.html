@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ question.title }} | CampusConnect{% endblock %}
+{% block nav_forum %}active{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-9">
+
+    <!-- Question -->
+    <div class="card mb-4">
+      <div class="card-body p-4">
+        <h1 class="h3 fw-bold mb-2">{{ question.title }}</h1>
+        {% if question.tags.all %}
+          <div class="mb-3">
+            {% for tag in question.tags.all %}
+              <span class="tag-badge">{{ tag.name }}</span>
+            {% endfor %}
+          </div>
+        {% endif %}
+        <p class="lead text-muted mb-4" style="font-size:1rem;">{{ question.description }}</p>
+        <small class="text-muted">
+          <i class="bi bi-person-circle me-1"></i>Asked by <strong>{{ question.author.username }}</strong>
+        </small>
+      </div>
+    </div>
+
+    <!-- Answers -->
+    <h4 class="fw-bold mb-3">
+      <i class="bi bi-chat-left-text me-2 text-primary"></i>Answers
+    </h4>
+
+    {% for answer in question.answers.all %}
+      <div class="answer-card mb-3">
+        <p class="mb-2">{{ answer.content }}</p>
+        <small class="text-muted">
+          <i class="bi bi-check2-circle me-1 text-success"></i>
+          Answered by <strong>{{ answer.author.username }}</strong>
+          &middot; {{ answer.created_at|date:"M d, Y" }}
+        </small>
+      </div>
+    {% empty %}
+      <div class="empty-state py-4">
+        <div class="empty-state-icon"><i class="bi bi-chat-square-dots"></i></div>
+        <p class="mb-0">No answers yet — be the first!</p>
+      </div>
+    {% endfor %}
+
+    <!-- Submit Answer -->
+    {% if user.is_authenticated %}
+      <div class="card mt-4">
+        <div class="card-header" style="background:var(--primary-light); color:var(--primary-dark);">
+          <i class="bi bi-pencil-square me-2"></i>Submit Your Answer
+        </div>
+        <div class="card-body p-4">
+          <form method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button type="submit" class="btn btn-primary mt-2">
+              <i class="bi bi-send me-1"></i>Post Answer
+            </button>
+          </form>
+        </div>
+      </div>
+    {% else %}
+      <div class="alert alert-info mt-4">
+        <i class="bi bi-info-circle me-2"></i>
+        <a href="{% url 'users:login' %}">Log in</a> to submit an answer.
+      </div>
+    {% endif %}
+
+    <div class="mt-4">
+      <a href="{% url 'forum:question_list' %}" class="btn btn-secondary btn-sm">
+        <i class="bi bi-arrow-left me-1"></i>Back to Forum
+      </a>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

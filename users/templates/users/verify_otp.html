@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Verify OTP | CampusConnect{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-5 col-lg-4">
+
+    <div class="text-center mb-4">
+      <div style="font-size:2.5rem; color:var(--primary);">
+        <i class="bi bi-shield-check"></i>
+      </div>
+      <h1 class="h3 fw-bold mt-2">Verify Your Account</h1>
+      <p class="text-muted">We sent a 6-digit code to your email. Enter it below.</p>
+    </div>
+
+    <div class="card-container text-center">
+      <form method="post" novalidate>
+        {% csrf_token %}
+        <div class="mb-3">
+          <label for="otpInput" class="form-label visually-hidden">OTP</label>
+          <input type="text"
+                 name="otp"
+                 class="form-control"
+                 id="otpInput"
+                 placeholder="• • • • • •"
+                 required
+                 maxlength="6"
+                 pattern="[0-9]{6}"
+                 inputmode="numeric"
+                 autocomplete="one-time-code"
+                 title="Enter the 6-digit code from your email.">
+        </div>
+        <div class="d-grid mt-3">
+          <button type="submit" class="btn btn-primary btn-lg">
+            <i class="bi bi-check2-circle me-1"></i>Verify
+          </button>
+        </div>
+      </form>
+
+      <div class="form-bottom-link mt-4">
+        Didn't receive the code? <a href="#">Resend OTP</a>
+        <br class="mb-1">
+        Wrong email? <a href="{% url 'users:register' %}">Register again</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
